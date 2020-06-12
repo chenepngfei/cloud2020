@@ -1,0 +1,64 @@
+server:
+  port: 8002
+
+spring:
+  application:
+    name: cloud-payment-service
+  profiles:
+    active: dev
+
+#  zipkin:
+#    base-url: http://localhost:9411
+#  sleuth:
+#    sampler:
+#      #采样率值介于0到1之间，1则表示全部采集
+#      probability: 1
+
+#mybatis:
+#  mapper-locations: classpath:mapper/*.xml
+#  type-aliases-package: com.afei.springcloud.entities
+
+
+
+
+#mybatis
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.afei.springcloud.entities
+  global-config:
+    #数据库相关配置
+    db-config:
+      #主键类型  AUTO:"数据库ID自增", INPUT:"用户输入ID", ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
+      id-type: AUTO
+      #字段策略 IGNORED:"忽略判断",NOT_NULL:"非 NULL 判断"),NOT_EMPTY:"非空判断"
+      field-strategy: NOT_NULL
+      #驼峰下划线转换
+      column-underline: true
+      logic-delete-value: -1
+      logic-not-delete-value: 0
+    banner: false
+  #原生配置
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    call-setters-on-nulls: true
+    jdbc-type-for-null: 'null'
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka/,http://www.eureka7002.com:7002/eureka/
+      #defaultZone: http://localhost:7001/eureka/
+      #      defaultZone: http://eureka7001.com:7001/eureka/
+    #表示是否将自己注册进urekaserver默认为true
+    register-with-eureka: true
+    #是否从EurekaServer抓取已有的注册信息，默认为true。单节点无所谓，集群必须设置为true，才能配合ribbon使用负载均衡
+    fetch-registry: true
+  instance:
+    ip-address: 127.0.0.1
+    instance-id: payment8002
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 1
+    lease-expiration-duration-in-seconds: 2

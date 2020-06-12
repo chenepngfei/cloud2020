@@ -11,4 +11,13 @@ import org.springframework.stereotype.Service;
 @Service("paymentService")
 public class PaymentServiceImpl extends ServiceImpl<PaymentDao, PaymentEntity> implements PaymentService {
 
+    @Override
+    public int create(PaymentEntity paymentEntity) {
+        return 0;
+    }
+
+    @Override
+    public PaymentEntity getPaymentById(Long id) {
+        return null;
+    }
 }

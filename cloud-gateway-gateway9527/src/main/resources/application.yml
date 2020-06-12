@@ -1,0 +1,39 @@
+server:
+  port: 9527
+spring:
+  application:
+    name: cloud-gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: payment_routh   #路由id，没有固定柜子，但要求唯一，建议配合服务名
+          #          uri: http://localhost:8001
+          uri: lb://cloud-payment-service   #匹配后提供服务的路由地址
+          predicates:
+            - Path=/sys/payment/get/**    #断言，路径相匹配的进行路由
+            #- After=2020-06-07T22:14:38.523+08:00[Asia/Shanghai]  #断言，路径相匹配的进行路由
+            #- Before=2020-06-07T22:14:38.523+08:00[Asia/Shanghai] #断言，路径相匹配的进行路由
+            #- Between=2020-06-07T22:14:38.523+08:00[Asia/Shanghai],2020-06-07T22:14:38.523+08:00[Asia/Shanghai]
+            #- Cookie=username,yunduo  #请求访问：curl http://localhost:9527/sys/payment/get/1 --cookie "username=yunduo"
+            #- Header=X-Requrt-Id,\d+ #请求要有X-Requrt-Id属性并且值为整数的正则表达式,curl http://localhost:9527/sys/payment/get/1 -H "X-Requrt-Id:1234"
+            #- Host=**.afei.com # curl http://localhost:9527/sys/payment/get/1 -H "Host:www.afei.com"
+            #-Method=GET
+#            - Query=username,\d+ #要有参数名username并且值还要是整数才能路由,http://localhost:9527/sys/payment/get/1?username=31
+        - id: payment_routh2
+          #          uri: http://localhost:8001
+          uri: lb://cloud-payment-service
+          predicates:
+            - Path=/sys/payment/lib/**
+      discovery:
+        locator:
+          enabled: true  #开启从注册中心动态生成路由的功能，用微服务名进行路由
+
+eureka:
+  instance:
+    hostname: cloud_gateway_service
+  client:
+    service-url:
+      #defaultZone: http://www.eureka7001.com:7001/eureka/
+      defaultZone: http://eureka7001.com:7001/eureka/,http://www.eureka7002.com:7002/eureka/
+    register-with-eureka: true
+    fetch-registry: true

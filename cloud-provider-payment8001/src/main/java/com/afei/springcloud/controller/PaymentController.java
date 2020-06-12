@@ -5,11 +5,15 @@ import com.afei.springcloud.entities.PaymentEntity;
 import com.afei.springcloud.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
-
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -25,6 +29,12 @@ import java.util.Map;
 public class PaymentController {
     @Autowired
     private PaymentService paymentService;
+
+    @Value("${server.port}")
+    private String serverPort;
+
+    @Resource
+    private DiscoveryClient discoveryClient;
 
     /**
      * 列表
@@ -44,7 +54,7 @@ public class PaymentController {
         PaymentEntity paymentEntity = paymentService.getById(id);
 
         if(paymentEntity != null){
-            return new CommonResult<>(200,"查询成功",paymentEntity);
+            return new CommonResult<>(200,"查询成功端口号："+serverPort,paymentEntity);
         }else{
             return new  CommonResult<>(444,"查询失败",null);
         }
@@ -58,8 +68,6 @@ public class PaymentController {
      */
     @RequestMapping("/save")
     public CommonResult<PaymentEntity> save(@RequestBody PaymentEntity payment) {
-       // PaymentEntity payment = new PaymentEntity();
-       // payment.setSerial("sdfdsfs");
         paymentService.save(payment);
 
         log.info("插入结果：",payment + "hehe");
@@ -72,5 +80,48 @@ public class PaymentController {
         //return new CommonResult<PaymentEntity>(1,payment.getId().toString());
     }
 
+    @GetMapping(value = "/payment/discovery")
+    public Object discovery(){
+        List<String> services = discoveryClient.getServices();
+
+        services.forEach(service ->{
+            System.out.println("-----service" + service);
+        });
+
+        List<ServiceInstance> instances = discoveryClient.getInstances("CLOUD-PAYMENT-SERVICE");
+        for(ServiceInstance instance : instances){
+            System.out.println(instance.getServiceId()+"\t" + instance.getHost()+"\t"+ instance.getPort()+"\t"+instance.getUri());;
+        }
+
+        return  this.discoveryClient;
+
+    }
+
+    @GetMapping(value = "lib")
+    public String getPaymentLB(){
+        return  serverPort;
+    }
+
+    @GetMapping("feign/timeout")
+    public String getFeignTimeOut() {
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return serverPort;
+    }
+    @GetMapping(value = "/selectOne/{id}")
+    public CommonResult<PaymentEntity> selectOne(@PathVariable("id") Long id){
+
+        PaymentEntity paymentEntity = paymentService.getById(id);
+
+        if(paymentEntity != null){
+            return new CommonResult<>(200,"查询成功,端口号："+serverPort,paymentEntity);
+        }else{
+            return new  CommonResult<>(444,"查询失败",null);
+        }
+
+    }
 
 }

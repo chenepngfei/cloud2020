@@ -1,0 +1,5 @@
+/opt/module/idea/IdeaProjects/springcloud/cloud2020/cloud-provider-payment8001/src/main/java/com/afei/springcloud/controller/PaymentController.java
+/opt/module/idea/IdeaProjects/springcloud/cloud2020/cloud-provider-payment8001/src/main/java/com/afei/springcloud/service/PaymentService.java
+/opt/module/idea/IdeaProjects/springcloud/cloud2020/cloud-provider-payment8001/src/main/java/com/afei/springcloud/dao/PaymentDao.java
+/opt/module/idea/IdeaProjects/springcloud/cloud2020/cloud-provider-payment8001/src/main/java/com/afei/springcloud/PaymentMain8081.java
+/opt/module/idea/IdeaProjects/springcloud/cloud2020/cloud-provider-payment8001/src/main/java/com/afei/springcloud/service/impl/PaymentServiceImpl.java
